@@ -49,10 +49,10 @@ class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PopualrMovieListCubit, PopularMovieListState>(
-      buildWhen: (prev, current) =>
-          (current.popularMovieList != null &&
-              current.popularMovieList!.isNotEmpty) ||
-          current.isLoading,
+      // buildWhen: (prev, current) =>
+      //     (current.popularMovieList != null &&
+      //         current.popularMovieList!.isNotEmpty) ||
+      //     current.isLoading,
       builder: (context, state) {
         if (state.popularMovieList != null &&
             state.popularMovieList!.isNotEmpty) {
@@ -82,10 +82,11 @@ class _BodyState extends State<_Body> {
         }
         if (state.failure != null) {
           return Center(child: Text(state.failure!.message));
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
         }
-        return const Center(
-          child: CircularProgressIndicator(color: Colors.black),
-        );
       },
     );
   }
