@@ -42,11 +42,17 @@ class UnauthorizedAccess extends ClientException {
 }
 
 
-
-class BadRequest extends ClientException {
-  BadRequest({
+ class GenericException extends ClientException {
+  GenericException({
     required super.message,
     required super.statusCode,
   });
 }
 
+
+class BadResponseException extends ClientException {
+  BadResponseException({
+    required super.message,
+    required super.statusCode,
+  });
+}

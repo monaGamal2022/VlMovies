@@ -5,7 +5,7 @@ import 'package:vl_movies/core/domain/failures/failure.dart';
 
 extension ExceptionsDecoder on AppException {
   AppFailure dioExceptionsDecoder(AppException exception) {
-    if (exception is BadRequest) {
+    if (exception is BadResponseException) {
       return BadRequestFailure(message: exception.message);
     }
     if (exception is UnauthorizedAccess) {

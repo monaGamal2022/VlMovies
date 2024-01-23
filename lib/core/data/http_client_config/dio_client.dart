@@ -124,17 +124,24 @@ class DioClient {
 AppException _converDioExceptionToAppException(DioException exception) {
   switch (exception.type) {
     case DioExceptionType.connectionError:
-      NetworkExcpetion();
+      NetworkExcpetion(message: exception.response?.data, statusCode: exception.response?.statusCode);
       break;
     case DioExceptionType.connectionTimeout:
     case DioExceptionType.receiveTimeout:
     case DioExceptionType.badResponse:
-      ServerException(
+      BadResponseException(
         statusCode: exception.response?.statusCode,
         message: exception.response?.data,
       );
       break;
-    default:
+  
+    case DioExceptionType.sendTimeout:
+    break ; 
+    
+    case DioExceptionType.badCertificate:
+    case DioExceptionType.cancel:
+    case DioExceptionType.unknown:
+   return GenericException(message: exception.message!, statusCode: exception.response?.statusCode) ; 
   }
   return ServerException(
     message: exception.response?.data,
