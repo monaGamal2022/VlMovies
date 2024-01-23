@@ -7,30 +7,19 @@ import 'package:vl_movies/core/enums/request_method_types.dart';
 import '../models/base_api_response_model.dart';
 
 class DioClient {
-  final List<Interceptor>? interceptors;
   final String baseUrl;
-  final Duration? connectTimeout;
-  final Duration? receiveTimeout;
-  final Duration? sendTimeout;
 
-  Dio _dio;
+  final Dio _dio = Dio();
 
   DioClient(
-    this.connectTimeout,
-    this.receiveTimeout,
-    this.sendTimeout,
-    this._dio, {
-    required this.baseUrl,
-    this.interceptors,
-  }) {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: baseUrl,
-        connectTimeout: connectTimeout,
-        receiveTimeout: receiveTimeout,
-        sendTimeout: sendTimeout,
-        headers: {"accept": "application/json"},
-      ),
+    this.baseUrl,
+  ) {
+    _dio.options = BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(minutes: 1),
+      sendTimeout: const Duration(milliseconds: 60 * 1000),
+      receiveTimeout: const Duration(milliseconds: 60 * 1000),
+      headers: {"accept": "application/json"},
     );
     _dio.interceptors.add(
       PrettyDioLogger(
@@ -45,7 +34,6 @@ class DioClient {
         canShowLog: true,
       ),
     );
-    if (interceptors != null) _dio.interceptors.addAll(interceptors!);
   }
 
   Future<Either<AppException, BaseApiResponseModel<T>>?> excute<T>({
@@ -69,7 +57,7 @@ class DioClient {
           return Right(BaseApiResponseModel(
               statusCode: result.statusCode,
               data: parsingResponse.call(
-                  result.data,
+                result.data,
               )));
 
         case RequestMethodTypes.put:
@@ -82,7 +70,7 @@ class DioClient {
           return Right(BaseApiResponseModel(
               statusCode: result.statusCode,
               data: parsingResponse.call(
-                 result.data,
+                result.data,
               )));
 
         case RequestMethodTypes.delete:
@@ -95,7 +83,7 @@ class DioClient {
           return Right(BaseApiResponseModel(
               statusCode: result.statusCode,
               data: parsingResponse.call(
-                 result.data,
+                result.data,
               )));
         case RequestMethodTypes.patch:
           final result = await _dio.patch(
@@ -107,7 +95,7 @@ class DioClient {
           return Right(BaseApiResponseModel(
               statusCode: result.statusCode,
               data: parsingResponse.call(
-              result.data,
+                result.data,
               )));
 
         case RequestMethodTypes.read:
@@ -120,7 +108,7 @@ class DioClient {
           return Right(BaseApiResponseModel(
               statusCode: result.statusCode,
               data: parsingResponse.call(
-                 result.data,
+                result.data,
               )));
 
         default:

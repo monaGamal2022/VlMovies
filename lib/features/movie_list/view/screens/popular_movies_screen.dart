@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vl_movies/di/service_locator.dart';
 import 'package:vl_movies/features/movie_list/domain/logic/popular_movie_list_cubit.dart';
 import 'package:vl_movies/features/movie_list/domain/logic/popular_movie_state.dart';
 import 'package:vl_movies/features/movie_list/view/widgets/movie_list.dart';
 
-class PopularPersonsPage extends StatelessWidget {
-  const PopularPersonsPage({Key? key}) : super(key: key);
+class PopularMoviesScreen extends StatelessWidget {
+  static const id = '/';
+  const PopularMoviesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: _Body(),
+      body: BlocProvider(
+        create: (context) => di<PopualrMovieListCubit>(),
+        child: _Body(),
+      ),
     );
   }
 }
@@ -22,22 +27,20 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  late PopualrMovieListCubit popularPersonsCubit;
   late final ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    popularPersonsCubit = getIt<PopualrMovieListCubit>();
-    popularPersonsCubit.fetchFirstPatchOfPopularPersons();
+    di<PopualrMovieListCubit>().fetchFirstPatchOfPopularPersons();
     scrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       scrollController.addListener(() {
-        if (popularPersonsCubit.state.canLoadMorePages &&
+        if (di<PopualrMovieListCubit>().state.canLoadMorePages &&
             scrollController.position.pixels >=
                 scrollController.position.maxScrollExtent) {
-          popularPersonsCubit.loadMorePageOfPopularPeople();
+          di<PopualrMovieListCubit>().loadMorePageOfPopularPeople();
         }
       });
     });
@@ -46,40 +49,42 @@ class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PopualrMovieListCubit, PopularMovieListState>(
-      bloc: popularPersonsCubit,
       buildWhen: (prev, current) =>
-          current is PopularPersonsLoaded || current is Loading,
+          (current.popularMovieList != null &&
+              current.popularMovieList!.isNotEmpty) ||
+          current.isLoading,
       builder: (context, state) {
-        return state.maybeWhen(
-          orElse: () => const Center(
-              child: CircularProgressIndicator(color: Colors.black)),
-          popularPersonsLoaded: (data) => RefreshIndicator(
-            color: Colors.black,
-            onRefresh: () async {
-              popularPersonsCubit.fetchFirstPatchOfPopularPersons();
-            },
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  PopularPersonsList(popularPersons: data),
-                  BlocBuilder<PopualrMovieListCubit, PopularMovieListState>(
-                    bloc: popularPersonsCubit,
-                    buildWhen: (prev, current) => current.isPaginating,
-                    builder: (context, state) => state.maybeWhen(
-                      orElse: () => const SizedBox.shrink(),
-                      paginating: () => const Padding(
+        if (state.popularMovieList != null &&
+            state.popularMovieList!.isNotEmpty) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                PopularPersonsList(popularMoviesList: state.popularMovieList!),
+                BlocBuilder<PopualrMovieListCubit, PopularMovieListState>(
+                  buildWhen: (prev, current) => current.isPaginating,
+                  builder: (context, state) {
+                    if (state.isPaginating) {
+                      return const Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
                         child: CircularProgressIndicator(
                           color: Colors.black,
                         ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                )
+              ],
             ),
-          ),
+          );
+        }
+        if (state.failure != null) {
+          return Center(child: Text(state.failure!.message));
+        }
+        return const Center(
+          child: CircularProgressIndicator(color: Colors.black),
         );
       },
     );

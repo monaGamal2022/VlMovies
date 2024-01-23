@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:vl_movies/features/movie_details/view/screens/movie_details_screen.dart';
 import 'package:vl_movies/features/movie_list/domain/entities/popular_movie.dart';
 
-class PopularPersonItem extends StatelessWidget {
+class PopularMovieItem extends StatelessWidget {
   final PopularMovie movieItem;
 
-  PopularPersonItem({super.key, required this.movieItem});
+  const PopularMovieItem({super.key, required this.movieItem});
 
-  // final imageConfiguration = getIt<AppConfiguration>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class PopularPersonItem extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => MovieDetailsScreen(
-              id: movieItem.id,
+              movieId: movieItem.id
             ),
           ),
         );

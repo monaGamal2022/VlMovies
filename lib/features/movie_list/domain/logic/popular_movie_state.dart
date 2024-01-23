@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:vl_movies/core/domain/failures/failure.dart';
 import 'package:vl_movies/features/movie_list/domain/entities/popular_movie.dart';
 
-class PopularMovieListState {
+class PopularMovieListState extends Equatable {
   final bool isLoading;
   final bool isPaginating;
   final List<PopularMovie>? popularMovieList;
@@ -9,7 +10,7 @@ class PopularMovieListState {
   final bool canLoadMorePages;
   final AppFailure? failure;
 
-  PopularMovieListState({
+  const PopularMovieListState({
     this.failure,
     this.isLoading = true,
     this.isPaginating = false,
@@ -17,15 +18,14 @@ class PopularMovieListState {
     this.currentPage = 1,
     this.canLoadMorePages = true,
   });
-  PopularMovieListState loadingState(bool isLoading) => PopularMovieListState(
+  PopularMovieListState loadingState(bool isLoading) => copyWith(
         isLoading: isLoading,
       );
-      
-  PopularMovieListState paginatingState() =>
-      PopularMovieListState(isLoading: false, isPaginating: true);
 
-  PopularMovieListState failureState(AppFailure failure) =>
-      PopularMovieListState(
+  PopularMovieListState paginatingState() =>
+      copyWith(isLoading: false, isPaginating: true);
+
+  PopularMovieListState failureState(AppFailure failure) => copyWith(
         failure: failure,
         isLoading: false,
       );
@@ -34,13 +34,14 @@ class PopularMovieListState {
     required List<PopularMovie> data,
     required int page,
     required bool canLoadMore,
-  }) =>
-      PopularMovieListState(
-        failure: null,
-        isLoading: false,
-        popularMovieList: data,
-        canLoadMorePages: canLoadMorePages,
-      );
+  }) {
+    return copyWith(
+      failure: null,
+      isLoading: false,
+      popularMovieList: data,
+      canLoadMorePages: canLoadMorePages,
+    );
+  }
 
   PopularMovieListState copyWith({
     bool? isLoading,
@@ -59,4 +60,14 @@ class PopularMovieListState {
       canLoadMorePages: canLoadMorePages ?? this.canLoadMorePages,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        failure,
+        isLoading,
+        isPaginating,
+        popularMovieList,
+        currentPage,
+        canLoadMorePages,
+      ];
 }

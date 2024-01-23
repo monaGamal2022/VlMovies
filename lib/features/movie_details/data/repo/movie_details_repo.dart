@@ -4,10 +4,10 @@ import 'package:vl_movies/features/movie_details/data/datasource/movie_details_d
 import 'package:vl_movies/features/movie_details/domain/entities/movie_details.dart';
 import 'package:vl_movies/features/movie_details/data/mapper/movie_details_api_response_to_domain.dart';
 
-class FetchMovieDetailsRepoImpl {
+class FetchMovieDetailsRepo {
   final MovieDetailsDatasource datasource;
 
-  FetchMovieDetailsRepoImpl({required this.datasource});
+  FetchMovieDetailsRepo({required this.datasource});
 
   @override
   Future<Either<AppFailure, MovieDetails>> fetchMovieDetails(

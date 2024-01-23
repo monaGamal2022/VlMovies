@@ -3,9 +3,9 @@ import 'package:vl_movies/features/movie_list/domain/entities/popular_movie.dart
 import 'package:vl_movies/features/movie_list/view/widgets/popualr_movie_list_item.dart';
 
 class PopularPersonsList extends StatelessWidget {
-  final List<PopularMovie> popularPersons;
+  final List<PopularMovie> popularMoviesList;
 
-  const PopularPersonsList({Key? key, required this.popularPersons})
+  const PopularPersonsList({Key? key, required this.popularMoviesList})
       : super(key: key);
 
   @override
@@ -15,9 +15,9 @@ class PopularPersonsList extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(12),
       separatorBuilder: (_, index) => const Divider(),
-      itemCount: popularPersons.length,
-      itemBuilder: (_, index) => PopularPersonItem(
-        movieItem: popularPersons[index],
+      itemCount: popularMoviesList.length,
+      itemBuilder: (_, index) => PopularMovieItem(
+        movieItem: popularMoviesList[index],
       ),
     );
   }

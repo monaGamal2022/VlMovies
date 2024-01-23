@@ -10,12 +10,12 @@ import 'package:vl_movies/features/movie_details/domain/entities/movie_details.d
 import 'package:vl_movies/features/movie_list/data/repository/fetch_movie_list_repo.dart';
 import 'package:vl_movies/features/movie_list/domain/entities/popular_movie.dart';
 
-class GetMovieDetailsUseCase
+class FetchMovieDetailsUseCase
     implements
         UseCase<MovieDetailsParam, Future<Either<AppFailure, MovieDetails>>> {
-  final FetchMovieDetailsRepoImpl repository;
+  final FetchMovieDetailsRepo repository;
 
-  GetMovieDetailsUseCase(this.repository);
+  FetchMovieDetailsUseCase(this.repository);
 
   @override
   Future<Either<AppFailure, MovieDetails>> call(

@@ -8,17 +8,14 @@ import 'package:vl_movies/features/movie_list/domain/entities/popular_movie.dart
 
 class GetPopularMoviesUseCase
     implements
-        UseCase<PageParams,
-            Future<Either<AppFailure, Page<PopularMovie>>>> {
-  final FetchPopularMovieRepoImpl repository;
+        UseCase<PageParams, Future<Either<AppFailure, Page<PopularMovie>>>> {
+  final FetchPopularMoviesRepo repository;
 
   GetPopularMoviesUseCase(this.repository);
-  
+
   @override
-  Future<Either<AppFailure, Page<PopularMovie>>> call(PageParams pageParams) async{
-    return repository.fetchPopularMovies(pageNumber: pageParams.currentPage) ; 
+  Future<Either<AppFailure, Page<PopularMovie>>> call(
+      PageParams pageParams) async {
+    return repository.fetchPopularMovies(pageNumber: pageParams.currentPage);
   }
-  
-
-
 }

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:vl_movies/core/constants/constants.dart';
 import 'package:vl_movies/core/constants/end_points.dart';
 import 'package:vl_movies/core/data/exception/server_exception.dart';
 import 'package:vl_movies/core/data/http_client_config/dio_client.dart';
@@ -11,11 +12,11 @@ class MovieDetailsDatasource {
 
   MovieDetailsDatasource(this.client);
 
-  @override
   Future<Either<AppException, BaseApiResponseModel<MovieDetailsApiResponse>>?>
       fetchMovieDetails({required int id}) async {
     final result = await client.excute(
         path: popularMovieList,
+        queryParameters: {"api_key": apiKey},
         method: RequestMethodTypes.read,
         parsingResponse: (json) => MovieDetailsApiResponse.fromJson(json));
     return result;
